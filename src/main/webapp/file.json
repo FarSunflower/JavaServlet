@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Charmander",
+    "phone": "004",
+    "address": "Kanto",
+    "image": "/images/004.png",
+    "orders": [
+      {
+        "id": 101,
+        "date": "2024-11-01T10:00:00Z",
+        "amount": 250.75,
+        "paymentMethod": "Debit Card"
+      },
+      {
+        "id": 102,
+        "date": "2024-11-10T15:30:00Z",
+        "amount": 89.99,
+        "paymentMethod": "Debit Card"
+      },
+      {
+        "id": 103,
+        "date": "2024-11-10T15:30:00Z",
+        "amount": 1000.99,
+        "paymentMethod": "Debit Card"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Bulbasaur",
+    "phone": "001",
+    "address": "Kanto",
+    "image": "/images/001.jpg",
+    "orders": [
+      {
+        "id": 201,
+        "date": "2024-11-05T09:15:00Z",
+        "amount": 499.99,
+        "paymentMethod": "Debit Card"
+      },
+      {
+        "id": 202,
+        "date": "2024-11-20T12:45:00Z",
+        "amount": 150.50,
+        "paymentMethod": "Debit Card"
+      }
+    ]
+  }
+]

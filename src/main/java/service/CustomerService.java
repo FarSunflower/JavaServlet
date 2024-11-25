@@ -1,61 +1,71 @@
 package service;
 
+import dao.CustomerDAO;
+import dao.OrderDAO;
 import model.Customer;
+import model.Orders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerService {
-    private List<Customer> customers;
 
-    public CustomerService(String filePath) {
-        this.customers = loadCustomersFromFile(filePath);
-    }
-    // Load customers from a JSON file
-    private List<Customer> loadCustomersFromFile(String filePath) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // Read the list of customers from the file and map them to Customer objects
-            Customer[] customerArray = objectMapper.readValue(new File(filePath), Customer[].class);
-            return new ArrayList<>(Arrays.asList(customerArray));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArrayList<>(); // Return an empty list in case of an error
-        }
+    private CustomerDAO customerDAO;
+    private OrderService orderService;
+
+    public CustomerService() {
+
+        this.customerDAO = new CustomerDAO(); // Use the DAO to interact with the database
+        this.orderService = new OrderService();
     }
 
-    public CustomerService(List<Customer> customers) {
-        this.customers = customers;
-    }
-
-    // Add a customer to the list
+    // Add a customer to the database
     public void addCustomer(Customer customer) {
-        customers.add(customer);
+        customerDAO.saveCustomer(customer);
     }
 
-    // Return all customers without their orders
+    // Return all customers from the database without their orders
     public List<Customer> getAllCustomersWithoutOrders() {
-        List<Customer> customersWithoutOrders = new ArrayList<>();
-        for (Customer customer : customers) {
-            customersWithoutOrders.add(new Customer(
-                    customer.getId(),
-                    customer.getName(),
-                    customer.getPhone(),
-                    customer.getAddress(),
-                    customer.getImage(),
-                    null // Exclude orders
-            ));
-        }
-        return customersWithoutOrders;
+        return customerDAO.getAllCustomers(); // Assuming DAO fetches customers without orders
     }
 
     // Return a customer by ID with all their orders
     public Customer getCustomerByIdWithOrders(int id) {
-        Optional<Customer> customer = customers.stream()
-                .filter(c -> c.getId() == id)
-                .findFirst();
+        return customerDAO.getCustomerByIdWithOrders(id);
+    }
+    public void addOrderForCustomer(int customerId, Orders newOrder) {
+        try {
+            Customer customer = customerDAO.getCustomerById(customerId);
+            if (customer == null) {
+                throw new IllegalArgumentException("Customer not found.");
+            }
 
-        return customer.orElse(null); // Return null if no customer found
+            // Ensure the orders list is initialized
+            if (customer.getOrders() == null) {
+                customer.setOrders(new ArrayList<>());
+            }
+
+            // Add the order to the customer's list
+            customer.getOrders().add(newOrder);
+            newOrder.setCustomer(customer); // Set customer reference in the order
+
+            // Save the order using OrderService
+            orderService.createOrder(newOrder);
+        } catch (Exception e) {
+            System.err.println("Error adding order: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error saving order.");
+        }
+    }
+    // Example method to retrieve a customer by ID
+    public Customer getCustomerById(int customerId) {
+        // Implement database retrieval logic or in-memory logic
+        // For example, return some customer based on the ID
+        return new Customer();  // Return a dummy customer for now
+    }
+
+    // Example method to update the customer in the database
+    public void updateCustomer(Customer customer) {
+        // Implement logic to update the customer in the database
     }
 }

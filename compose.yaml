@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: 'postgres:15.5'
+    container_name: "servlet-db"
+    environment:
+      - 'POSTGRES_DB=custom'
+      - 'POSTGRES_PASSWORD=123'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - "5572:5432"

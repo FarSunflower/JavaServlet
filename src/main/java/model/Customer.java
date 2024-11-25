@@ -1,29 +1,36 @@
 package model;
 
-import java.io.*;
-import java.util.*;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
+@Entity
 public class Customer implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
     private String phone;
     private String address;
     private String image;
 
-    private List<Order> orders;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Orders> orders;
 
+    // Default Constructor
     public Customer() {
     }
 
-    public Customer(int id, String name, String phone, String address, String image, List<Order> orders) {
-        this.id = id;
+    // Constructor with Parameters
+    public Customer(String name, String phone, String address, String image) {
         this.name = name;
         this.phone = phone;
         this.address = address;
         this.image = image;
-        this.orders = orders;
     }
 
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -64,11 +71,11 @@ public class Customer implements Serializable {
         this.image = image;
     }
 
-    public List<Order> getOrders() {
+    public List<Orders> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(List<Orders> orders) {
         this.orders = orders;
     }
 }
